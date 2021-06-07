@@ -303,7 +303,268 @@ class PanelDialogos(tk.Frame):
         if comando=="Guardar":
             resultado =  FileDialog.asksaveasfile(title="Guardar un archivo")
             self.caja2.insert(tk.INSERT,str(resultado)+"\n")
-            
+
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
+class VentanaGraficasLineales(tk.Toplevel):
+    def __init__(self,ventana_padre):
+        super().__init__(ventana_padre)
+        self.panel_controles=tk.LabelFrame(self,text="Funciones Lineales",bd=2)
+        self.m = tk.DoubleVar(value=1.0)
+        self.b = tk.DoubleVar(value=-2.0)
+        self.x1 = tk.DoubleVar(value=-6.0)
+        self.x2 = tk.DoubleVar(value=6.0)
+        self.color=(0.0, 128.5/256, 0.0)
+        self.color_hexa='#008000'
+        # Creamos el canvas, que podemos decir que es el lugar en donde
+        # se mostrara el gráfico
+        ttk.Label(self.panel_controles,text=" f(x)=mx +b").grid(sticky="e",row=1,column=1)
+        ttk.Label(self.panel_controles,text="Pendiente m=").grid(sticky="e",row=2,column=1)
+        ttk.Label(self.panel_controles,text="Y intecepto b=").grid(sticky="e",row=3,column=1)
+        ttk.Entry(self.panel_controles,width=10,textvariable=self.m).grid(row=2,column=2)
+        ttk.Entry(self.panel_controles,width=10,textvariable=self.b).grid(row=3,column=2)
+
+        ttk.Label(self.panel_controles,text="Intervalo de graficación").grid(sticky="e",row=4,column=1)
+        ttk.Label(self.panel_controles,text="Límite Inferior x1=").grid(sticky="e",row=5,column=1)
+        ttk.Label(self.panel_controles,text="Límite Superior x2=").grid(sticky="e",row=6,column=1)
+        
+        self.etiqueta_color=tk.Label(self.panel_controles,text="Color")
+        self.etiqueta_color.config(bg=self.color_hexa)
+        self.etiqueta_color.grid(sticky="e",row=7,column=1)
+        
+        self.btn_color = ttk.Button(self.panel_controles, text="Seleccionar",command=lambda: self.eventos("Color"))
+        self.btn_color.grid(row=7, column=2)
+        
+        ttk.Entry(self.panel_controles,width=10,textvariable=self.x1).grid(row=5,column=2)
+        ttk.Entry(self.panel_controles,width=10,textvariable=self.x2).grid(row=6,column=2)
+        self.btn_graficar = ttk.Button(self.panel_controles, text="Graficar",command=lambda: self.eventos("Graficar"))
+        self.btn_graficar.grid(row=10, column=1)
+        self.btn_graficar = ttk.Button(self.panel_controles, text="Nueva Grafica",command=lambda: self.eventos("Nueva Grafica"))
+        self.btn_graficar.grid(row=10, column=2)
+        
+        self.panel_controles.pack()
+        self.figura=plt.figure(1,figsize=(6, 6), dpi=80)
+        self.figura=self.graficar(self.x1.get(),self.x2.get(),self.m.get(),self.b.get(),self.figura.number)
+        self.canvas = FigureCanvasTkAgg(self.figura, master=self)
+        self.canvas.get_tk_widget().pack()
+        self.canvas.draw()
+        self.toolbar =  NavigationToolbar2Tk(self.canvas, self )
+        self.toolbar.pack()
+        self.toolbar.update()
+        
+    def f(self,x,m,b):
+        y=(m*x)+b
+        return(y)
+    def graficar(self,x1,x2,m,b,numfig):
+        fig=plt.figure(numfig,figsize=(6, 6), dpi=80)
+        plano=fig.gca()
+        x=np.linspace(x1,x2,100)
+        y=self.f(x,m,b)
+        plano.plot(x,y,color=self.color)
+        return(fig)
+    def eventos(self, comando:str):
+        if (comando=="Graficar"):
+            self.figura=self.graficar(self.x1.get(),self.x2.get(),self.m.get(),self.b.get(),self.figura.number)
+            self.canvas.draw()
+        if (comando=="Nueva Grafica"):
+            self.figura.clear()
+            self.figura=self.graficar(self.x1.get(),self.x2.get(),self.m.get(),self.b.get(),self.figura.number)
+            self.canvas.draw()
+        if (comando=="Color"):
+            ((r,g,b),h) = ColorChooser.askcolor(master=self,title="Elige un color")
+            self.lift()
+            self.color_hexa=h
+            self.color=(r/256,g/256,b/256)
+            self.etiqueta_color.config(bg=self.color_hexa)
+
+class VentanaGraficasExponenciales(tk.Toplevel):
+    def __init__(self,ventana_padre):
+        super().__init__(ventana_padre)
+        self.panel_controles=tk.LabelFrame(self,text="Funciones Lineales",bd=2)
+        self.a = tk.DoubleVar(value=1.0)
+        self.b = tk.DoubleVar(value=-2.0)
+        self.x1 = tk.DoubleVar(value=-6.0)
+        self.x2 = tk.DoubleVar(value=6.0)
+        self.color=(0.0, 128.5/256, 0.0)
+        self.color_hexa='#008000'
+        # Creamos el canvas, que podemos decir que es el lugar en donde
+        # se mostrara el gráfico
+        ttk.Label(self.panel_controles,text=" f(x)= a*exp(b*x)").grid(sticky="e",row=1,column=1)
+        ttk.Label(self.panel_controles,text="Factor a=").grid(sticky="e",row=2,column=1)
+        ttk.Label(self.panel_controles,text="Factor b=").grid(sticky="e",row=3,column=1)
+        ttk.Entry(self.panel_controles,width=10,textvariable=self.a).grid(row=2,column=2)
+        ttk.Entry(self.panel_controles,width=10,textvariable=self.b).grid(row=3,column=2)
+
+        ttk.Label(self.panel_controles,text="Intervalo de graficación").grid(sticky="e",row=4,column=1)
+        ttk.Label(self.panel_controles,text="Límite Inferior x1=").grid(sticky="e",row=5,column=1)
+        ttk.Label(self.panel_controles,text="Límite Superior x2=").grid(sticky="e",row=6,column=1)
+        
+        self.etiqueta_color=tk.Label(self.panel_controles,text="Color")
+        self.etiqueta_color.config(bg=self.color_hexa)
+        self.etiqueta_color.grid(sticky="e",row=7,column=1)
+        
+        self.btn_color = ttk.Button(self.panel_controles, text="Seleccionar",command=lambda: self.eventos("Color"))
+        self.btn_color.grid(row=7, column=2)
+        
+        ttk.Entry(self.panel_controles,width=10,textvariable=self.x1).grid(row=5,column=2)
+        ttk.Entry(self.panel_controles,width=10,textvariable=self.x2).grid(row=6,column=2)
+        self.btn_graficar = ttk.Button(self.panel_controles, text="Graficar",command=lambda: self.eventos("Graficar"))
+        self.btn_graficar.grid(row=10, column=1)
+        self.btn_graficar = ttk.Button(self.panel_controles, text="Nueva Grafica",command=lambda: self.eventos("Nueva Grafica"))
+        self.btn_graficar.grid(row=10, column=2)
+        
+        self.panel_controles.pack()
+        self.figura=plt.figure(1,figsize=(6, 6), dpi=80)
+        self.figura=self.graficar(self.x1.get(),self.x2.get(),self.a.get(),self.b.get(),self.figura.number)
+        self.canvas = FigureCanvasTkAgg(self.figura, master=self)
+        self.canvas.get_tk_widget().pack()
+        self.canvas.draw()
+        self.toolbar =  NavigationToolbar2Tk(self.canvas, self )
+        self.toolbar.pack()
+        self.toolbar.update()
+        
+    def f(self,x,a,b):
+        y=a*np.exp(b*x)
+        return(y)
+    def graficar(self,x1,x2,a,b,numfig):
+        fig=plt.figure(numfig,figsize=(6, 6), dpi=80)
+        plano=fig.gca()
+        x=np.linspace(x1,x2,100)
+        y=self.f(x,a,b)
+        plano.plot(x,y,color=self.color)
+        return(fig)
+    def eventos(self, comando:str):
+        if (comando=="Graficar"):
+            self.figura=self.graficar(self.x1.get(),self.x2.get(),self.a.get(),self.b.get(),self.figura.number)
+            self.canvas.draw()
+        if (comando=="Nueva Grafica"):
+            self.figura.clear()
+            self.figura=self.graficar(self.x1.get(),self.x2.get(),self.a.get(),self.b.get(),self.figura.number)
+            self.canvas.draw()
+        if (comando=="Color"):
+            ((r,g,b),h) = ColorChooser.askcolor(master=self,title="Elige un color")
+            self.lift()
+            self.color_hexa=h
+            self.color=(r/256,g/256,b/256)
+            self.etiqueta_color.config(bg=self.color_hexa)
+
+class VentanaGraficasSenosoidales(tk.Toplevel):
+    def __init__(self,ventana_padre):
+        super().__init__(ventana_padre)
+        self.panel_controles=tk.LabelFrame(self,text="Funciones Lineales",bd=2)
+        #f(x)= a*exp(-c*x).(cos(w*x+b))
+        self.a = tk.DoubleVar(value=10)
+        self.c = tk.DoubleVar(value=1)
+        self.w = tk.DoubleVar(value=10)
+        self.b = tk.DoubleVar(value=0.1)
+        self.x1 = tk.DoubleVar(value=-6.0)
+        self.x2 = tk.DoubleVar(value=6.0)
+        self.color=(0.0, 128.5/256, 0.0)
+        self.color_hexa='#008000'
+        # Creamos el canvas, que podemos decir que es el lugar en donde
+        # se mostrara el gráfico
+        ttk.Label(self.panel_controles,text=" f(x)= a*exp(-c*x).(cos(w*x+b))").grid(sticky="e",row=1,column=1)
+        ttk.Label(self.panel_controles,text="Factores a=").grid(sticky="e",row=2,column=1)
+        ttk.Label(self.panel_controles,text="c=").grid(sticky="e",row=3,column=1)
+        ttk.Label(self.panel_controles,text="w=").grid(sticky="e",row=4,column=1)
+        ttk.Label(self.panel_controles,text="b=").grid(sticky="e",row=5,column=1)
+        ttk.Entry(self.panel_controles,width=10,textvariable=self.a).grid(row=2,column=2)
+        ttk.Entry(self.panel_controles,width=10,textvariable=self.c).grid(row=3,column=2)
+        ttk.Entry(self.panel_controles,width=10,textvariable=self.w).grid(row=4,column=2)
+        ttk.Entry(self.panel_controles,width=10,textvariable=self.b).grid(row=5,column=2)
+
+
+        ttk.Label(self.panel_controles,text="Intervalo de graficación").grid(sticky="e",row=6,column=1)
+        ttk.Label(self.panel_controles,text="Límite Inferior x1=").grid(sticky="e",row=7,column=1)
+        ttk.Label(self.panel_controles,text="Límite Superior x2=").grid(sticky="e",row=8,column=1)
+        ttk.Entry(self.panel_controles,width=10,textvariable=self.x1).grid(row=7,column=2)
+        ttk.Entry(self.panel_controles,width=10,textvariable=self.x2).grid(row=8,column=2)
+       
+        
+        self.etiqueta_color=tk.Label(self.panel_controles,text="Color")
+        self.etiqueta_color.config(bg=self.color_hexa)
+        self.etiqueta_color.grid(sticky="e",row=9,column=1)
+        
+        self.btn_color = ttk.Button(self.panel_controles, text="Seleccionar",command=lambda: self.eventos("Color"))
+        self.btn_color.grid(row=9, column=2)
+        
+        
+        self.btn_graficar = ttk.Button(self.panel_controles, text="Graficar",command=lambda: self.eventos("Graficar"))
+        self.btn_graficar.grid(row=10, column=1)
+        self.btn_graficar = ttk.Button(self.panel_controles, text="Nueva Grafica",command=lambda: self.eventos("Nueva Grafica"))
+        self.btn_graficar.grid(row=10, column=2)
+        
+        self.panel_controles.pack()
+        self.figura=plt.figure(1,figsize=(6, 6), dpi=80)
+        self.figura=self.graficar(self.x1.get(),self.x2.get(),self.figura.number)
+        self.canvas = FigureCanvasTkAgg(self.figura, master=self)
+        self.canvas.get_tk_widget().pack()
+        self.canvas.draw()
+        self.toolbar =  NavigationToolbar2Tk(self.canvas, self )
+        self.toolbar.pack()
+        self.toolbar.update()
+    def fsenosoidal(self,x):
+        #f(x)= a*exp(-c*x).(cos(w*x+b))
+        a=self.a.get()
+        b=self.b.get()
+        c=self.c.get()
+        w=self.w.get()
+        y=(a*np.exp(-c*x)*np.cos(w*x+b))
+        return y
+    def graficar(self,x1,x2,nfig):
+        fig =plt.figure(nfig)
+        plano= fig.gca()
+        x = np.linspace(x1, x2, 500, endpoint=True)
+        y = self.fsenosoidal(x)
+        plano.plot(x, y,color=self.color)
+        return(fig)    
+    def eventos(self, comando:str):
+        if (comando=="Graficar"):
+            self.figura=self.graficar(self.x1.get(),self.x2.get(),self.figura.number)
+            self.canvas.draw()
+        if (comando=="Nueva Grafica"):
+            self.figura.clear()
+            self.figura=self.graficar(self.x1.get(),self.x2.get(),self.figura.number)
+            self.canvas.draw()
+        if (comando=="Color"):
+            ((r,g,b),h) = ColorChooser.askcolor(master=self,title="Elige un color")
+            self.lift()
+            self.color_hexa=h
+            self.color=(r/256,g/256,b/256)
+            self.etiqueta_color.config(bg=self.color_hexa)
+        
+class PanelVentanas(tk.Frame):
+    def __init__(self,ventana_padre):
+        super().__init__(ventana_padre)
+        self.ventana_padre=ventana_padre
+
+        ttk.Label(self,text="Ventanas graficas 2D").grid(row=1,column=1)
+          
+        self.btn_lineal = ttk.Button(self, text="Lineales",command=lambda: self.eventos("Lineales"))
+        self.btn_lineal.grid(row=2, column=1)
+        self.btn_exponencial = ttk.Button(self, text="Exponenciales",command=lambda: self.eventos("Exponenciales"))
+        self.btn_exponencial.grid(row=3, column=1)
+        self.btn_senosoidal = ttk.Button(self, text="Senosoidales",command=lambda: self.eventos("Senosoidales"))
+        self.btn_senosoidal.grid(row=4, column=1)
+    def eventos(self,comando:str):
+        if comando=="Lineales":
+            self.dialogo=VentanaGraficasLineales(self)
+            self.dialogo.title("Graficas Funciones Lineales")
+            self.wait_window(self.dialogo)
+        if comando=="Exponenciales":
+            self.dialogo=VentanaGraficasExponenciales(self)
+            self.dialogo.title("Graficas Funciones Exponenciales")
+            self.wait_window(self.dialogo)
+        if comando=="Senosoidales":
+            self.dialogo=VentanaGraficasSenosoidales(self)
+            self.dialogo.title("Graficas Funciones Senosoidales")
+            self.wait_window(self.dialogo)
+        if comando=="Error":
+            MessageBox.showerror("Error", "Mensaje Error") 
+            self.caja2.insert(tk.INSERT,"Muestra mensaje de error\n")        
+        
+        
 class Applicacion(tk.Frame):
     def __init__(self, ventana_padre):
         super().__init__(ventana_padre)
@@ -334,13 +595,17 @@ class Applicacion(tk.Frame):
 
         self.panel_chequeo=PanelCajasChequeo(self.pestanias)
         self.panel_chequeo.pack(side="top", anchor="w",padx=10, pady=10)
+
+        self.panel_ventanas=PanelVentanas(self.pestanias)
+        self.panel_ventanas.pack(side="top", anchor="w",padx=10, pady=10)
         
         self.pestanias.add(self.panel_texto, text="Cajas de texto")
         self.pestanias.add(self.panel_combo, text="Combos")
         self.pestanias.add(self.panel_radio_botones, text="Radio Botones")
+        self.pestanias.add(self.panel_chequeo, text="Cajas de Chequeo")
         self.pestanias.add(self.panel_barra_Herramientas, text="Barra Herramientas")
         self.pestanias.add(self.panel_dialogos, text="Dialogos")
-        self.pestanias.add(self.panel_chequeo, text="Cajas de Chequeo")
+        self.pestanias.add(self.panel_ventanas, text="Ventanas")
         
         self.pack(fill="both",expand="yes",padx=10, pady=10)
        
