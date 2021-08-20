@@ -9,7 +9,7 @@ class PanelCajaTexto(tk.Frame):
         self.ventana_padre=ventana_padre
         
         ttk.Label(self,text="Nombre").grid(row=1,column=1)
-        self.caja1=ttk.Entry(self)
+        self.caja1=tk.Entry(self)
         self.caja1.config(width=30)
         self.caja1.grid(row=1,column=2)
 
@@ -381,7 +381,7 @@ class VentanaGraficasLineales(tk.Toplevel):
 class VentanaGraficasExponenciales(tk.Toplevel):
     def __init__(self,ventana_padre):
         super().__init__(ventana_padre)
-        self.panel_controles=tk.LabelFrame(self,text="Funciones Lineales",bd=2)
+        self.panel_controles=tk.LabelFrame(self,text="Funciones Exponenciales",bd=2)
         self.a = tk.DoubleVar(value=1.0)
         self.b = tk.DoubleVar(value=-2.0)
         self.x1 = tk.DoubleVar(value=-6.0)
@@ -452,7 +452,7 @@ class VentanaGraficasExponenciales(tk.Toplevel):
 class VentanaGraficasSenosoidales(tk.Toplevel):
     def __init__(self,ventana_padre):
         super().__init__(ventana_padre)
-        self.panel_controles=tk.LabelFrame(self,text="Funciones Lineales",bd=2)
+        self.panel_controles=tk.LabelFrame(self,text="Funciones Senosoidales",bd=2)
         #f(x)= a*exp(-c*x).(cos(w*x+b))
         self.a = tk.DoubleVar(value=10)
         self.c = tk.DoubleVar(value=1)
@@ -565,15 +565,20 @@ class PanelVentanas(tk.Frame):
             self.caja2.insert(tk.INSERT,"Muestra mensaje de error\n")        
         
         
-class Applicacion(tk.Frame):
-    def __init__(self, ventana_padre):
-        super().__init__(ventana_padre)
-        self.ventana_padre=ventana_padre
-        self.panel_imagen=PanelImagen(self)
+class InterfaceDemo(tk.Tk):
+    
+    def __init__(self, titulo):
+        super().__init__()
+        self.title(titulo)
+        self.frame=tk.Frame()
+        self.frame.pack(fill="both",expand="yes",padx=10, pady=10)
+
+        
+        self.panel_imagen=PanelImagen(self.frame)
         self.panel_imagen.pack(fill="both")
 
         
-        self.pestanias = ttk.Notebook(self)
+        self.pestanias = ttk.Notebook(self.frame)
         self.pestanias.pack(fill="both",expand="yes",padx=10, pady=10)
 
         self.panel_texto=PanelCajaTexto(self.pestanias)
@@ -588,7 +593,7 @@ class Applicacion(tk.Frame):
         self.panel_barra_Herramientas=PanelBarraHerramientas(self.pestanias)
         self.panel_barra_Herramientas.pack(side="top", anchor="w",padx=10, pady=10)
 
-        self.panel_menu=PanelMenu(self.ventana_padre)
+        self.panel_menu=PanelMenu(self)
         
         self.panel_dialogos=PanelDialogos(self.pestanias)
         self.panel_dialogos.pack(side="top", anchor="w",padx=10, pady=10)
@@ -607,9 +612,9 @@ class Applicacion(tk.Frame):
         self.pestanias.add(self.panel_dialogos, text="Dialogos")
         self.pestanias.add(self.panel_ventanas, text="Ventanas")
         
-        self.pack(fill="both",expand="yes",padx=10, pady=10)
+        
        
 
-main_window = tk.Tk()
-app = Applicacion(main_window)
+#codigo de prueba
+app = InterfaceDemo("Demo tkinter")
 app.mainloop()
