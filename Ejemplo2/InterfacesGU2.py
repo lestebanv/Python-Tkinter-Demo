@@ -30,7 +30,7 @@ class PanelDatos(tk.LabelFrame):
         
 class PanelCalculos(tk.LabelFrame):
    def __init__(self,panelpadre):
-        super().__init__(panelpadre,text="Calculos")
+        super().__init__(panelpadre,text="Cálculos")
         tk.Label(self,text="...").grid(row=1,column=2,sticky="w")
         tk.Label(self,text="...").grid(row=2,column=2,sticky="w")
         tk.Label(self,text="...").grid(row=3,column=2,sticky="w")       
@@ -40,7 +40,7 @@ class PanelCalculos(tk.LabelFrame):
         
 class PanelOpciones(tk.LabelFrame):
    def __init__(self,panelpadre):
-        super().__init__(panelpadre,text="Calculos")     
+        super().__init__(panelpadre,text="Opciones")     
         tk.Button(self, text="Cambiar Empleado",width=25,command=lambda: self.eventos("Limpiar")).grid(row=1,column=1)
         tk.Button(self, text="Opcion1",width=25,command=lambda: self.eventos("Limpiar")).grid(row=1,column=2)
         tk.Button(self, text="Opcion2",width=25,command=lambda: self.eventos("Limpiar")).grid(row=1,column=3)
