@@ -1,7 +1,6 @@
 import tkinter as tk
 import os
 
-
 class PanelDatos(tk.LabelFrame):
    def __init__(self,panelpadre):
         super().__init__(panelpadre,text="Datos")
@@ -11,8 +10,7 @@ class PanelDatos(tk.LabelFrame):
         tk.Label(self,text="Fecha de Nacimiento:").grid(row=4,column=1,sticky="W")
         tk.Label(self,text="Fecha de Ingreso:").grid(row=5,column=1,sticky="W")
         tk.Label(self,text="Salario:").grid(row=6,column=1,sticky="W")
-
-        
+ 
         tk.Entry(self).grid(row=1,column=2,sticky="W")
         tk.Entry(self).grid(row=2,column=2,sticky="W")
         tk.Entry(self).grid(row=3,column=2,sticky="W")

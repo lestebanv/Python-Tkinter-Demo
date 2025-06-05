@@ -13,6 +13,7 @@ def filtrar_por_municipio(df_completo,municipio:str):
 
 def agrupar_por_fecha(df_completo):
     df_agrupado=df_completo.groupby("fecha reporte web")["Edad"].agg(contagios="count").reset_index()
+ 
     return df_agrupado
 
 def obtener_lista_municipios(df_completo):
